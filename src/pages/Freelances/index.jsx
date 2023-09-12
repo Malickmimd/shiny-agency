@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Loader } from '../../utils/style/Loader'
 import { useFetch, useTheme } from '../../utils/hooks';
 import { useState } from 'react';
+import { Link } from "react-router-dom";
 
 const CardsContainer = styled.div`
   display: grid;
@@ -29,15 +30,19 @@ const PageSubtitle = styled.h2`
   color: ${({ theme }) => (theme === 'light' ? '#000000' : '#ffffff')};
 `
 
-const LoaderWrapper = styled.div`
+export const LoaderWrapper = styled.div`
   display: flex;
   justify-content: center;
 `
 
+const StyledLink = styled(Link)`
+text-decoration: none;
+`
+
+
 function Freelances() {
   const { theme } = useTheme()
   const { data, isLoading, error } = useFetch(`http://localhost:8000/freelances`)
-  const {activejob, setActiveJob} = useState("")
 
   const freelancersList  = data?.freelancersList
 
@@ -57,13 +62,15 @@ function Freelances() {
         </LoaderWrapper>
       ) : (
         <CardsContainer>
-          {freelancersList.map((profile, index) => (profile.job === activejob || !activejob) && (
+          {freelancersList.map((profile, index) => (
+            <StyledLink key={`freelance-${profile.id}`} to={`/profile/${profile.id}`}>
             <Card
               key={`${profile.name}-${index}`}
               label={profile.job}
               name={profile.name}
               picture={profile.picture}
             />
+            </StyledLink>
           ))}
         </CardsContainer>
       )}
